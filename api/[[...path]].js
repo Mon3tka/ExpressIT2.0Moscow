@@ -71,7 +71,15 @@ export default {
       }
     }
 
-    if (path === '' && method === 'GET') return res({ ok: true, version: 1 });
+    if (path === '' && method === 'GET') return res({ ok: true, version: 2 });
+    if (path === 'health' && method === 'GET') {
+      try {
+        await getConfig();
+        return res({ ok: true, redis: true });
+      } catch (e) {
+        return res({ ok: false, error: String(e?.message || e) }, 500);
+      }
+    }
     return err('Not Found', 404);
   } catch (e) {
     console.error(e);

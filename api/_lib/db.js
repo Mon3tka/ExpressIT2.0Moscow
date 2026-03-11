@@ -11,7 +11,7 @@ const redis = new Redis({
 const KEYS = { config: 'expressit:config', adminHash: 'expressit:admin:hash', leads: 'expressit:leads' };
 
 export async function ensureAdmin() {
-  const resetPassword = process.env.ADMIN_RESET_PASSWORD;
+  const resetPassword = process.env.ADMIN_RESET_PASSWORD || process.env.ADMIN_PASSWORD;
   if (resetPassword) {
     const newHash = bcrypt.hashSync(resetPassword, 10);
     await redis.set(KEYS.adminHash, newHash);
@@ -19,15 +19,14 @@ export async function ensureAdmin() {
   }
   const hash = await redis.get(KEYS.adminHash);
   if (hash) return;
-  const password = process.env.ADMIN_PASSWORD || 'admin123';
-  const newHash = bcrypt.hashSync(password, 10);
+  const newHash = bcrypt.hashSync('admin123', 10);
   await redis.set(KEYS.adminHash, newHash);
 }
 
 export async function verifyAdmin(password) {
   const hash = await redis.get(KEYS.adminHash);
-  if (!hash) return false;
-  return bcrypt.compareSync(password, hash);
+  if (!hash || typeof hash !== 'string') return false;
+  return bcrypt.compareSync(String(password), hash);
 }
 
 export async function getConfig() {
