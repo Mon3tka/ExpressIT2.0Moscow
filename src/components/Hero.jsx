@@ -1,8 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { getSiteConfig } from '../lib/siteConfig';
 
 const Hero = () => {
-  const navigate = useNavigate();
+  const config = getSiteConfig();
+  const hero = config.hero || {};
 
   return (
     <section
@@ -18,61 +20,50 @@ const Hero = () => {
           <div className="space-y-8 animate-slide-up flex flex-col">
             <div className="info-block inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm text-xs font-medium text-white/90 cursor-default">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-              Реакция инженера до 15 минут 24/7 — без доплат
+              {hero.badge || 'Реакция инженера до 15 минут 24/7 — без доплат'}
             </div>
 
             <div className="space-y-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-white">
-                Без простоев, без отказов, без стресса —
+                {hero.title1 || 'Без простоев, без отказов, без стресса —'}
                 <span className="block text-[var(--accent)]">
-                  IT-поддержка бизнеса 24/7 в Москве
+                  {hero.title2 || 'IT-поддержка бизнеса 24/7 в Москве'}
                 </span>
               </h1>
               <p className="text-base sm:text-lg text-white/85 max-w-xl">
-                Берём на себя всю IT-инфраструктуру: от рабочих мест и серверов
-                до 1С и сетей. Гарантируем реакцию инженера до 15 минут 24/7,
-                работу по NDA, прозрачный фиксированный абонемент без скрытых
-                платежей и документированную инфраструктуру, которая всегда
-                остаётся под вашим контролем.
+                {hero.intro || 'Берём на себя всю IT-инфраструктуру: от рабочих мест и серверов до 1С и сетей. Гарантируем реакцию инженера до 15 минут 24/7, работу по NDA, прозрачный фиксированный абонемент без скрытых платежей и документированную инфраструктуру.'}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-white/80">
-              <div className="flex gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
-                <span>Пробный период 2 недели без риска и штрафов за расторжение.</span>
-              </div>
-              <div className="flex gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
-                <span>Полная документация: все доступы и схемы — на стороне вашей компании.</span>
-              </div>
-              <div className="flex gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
-                <span>Защита данных: NDA по умолчанию, аудит действий и разграничение доступов.</span>
-              </div>
-              <div className="flex gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
-                <span>Ежемесячная отчётность: вы видите, за что платите и что предотвращено.</span>
-              </div>
+              {(hero.bullets || [
+                'Пробный период 2 недели без риска и штрафов за расторжение.',
+                'Полная документация: все доступы и схемы — на стороне вашей компании.',
+                'Защита данных: NDA по умолчанию, аудит действий и разграничение доступов.',
+                'Ежемесячная отчётность: вы видите, за что платите и что предотвращено.',
+              ]).map((text, i) => (
+                <div key={i} className="flex gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
+                  <span>{text}</span>
+                </div>
+              ))}
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button
-                type="button"
-                onClick={() => navigate('/contacts')}
+              <Link
+                to="/contacts"
                 className="info-block inline-flex justify-center items-center px-7 py-3.5 rounded-xl bg-[var(--accent)] text-white text-sm sm:text-base font-semibold hover:bg-[var(--accent-hover)] transition-all duration-200 shadow-lg"
               >
-                Оставить заявку
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/contacts')}
+                {hero.ctaPrimary || 'Оставить заявку'}
+              </Link>
+              <Link
+                to="/contacts?topic=economy"
                 className="info-block inline-flex justify-center items-center px-6 py-3.5 rounded-xl border-2 border-[var(--accent)]/60 bg-black/40 backdrop-blur-sm text-sm text-white font-medium hover:bg-[var(--accent)]/20 transition-all duration-200"
               >
-                Рассчитать экономию на IT
-              </button>
+                {hero.ctaSecondary || 'Рассчитать экономию на IT'}
+              </Link>
               <div className="text-xs text-white/60 sm:ml-2">
-                Первичная консультация и аудит инфраструктуры — бесплатно.
+                {hero.ctaHint || 'Первичная консультация и аудит инфраструктуры — бесплатно.'}
               </div>
             </div>
 
@@ -93,12 +84,9 @@ const Hero = () => {
           </div>
 
           <div className="animate-slide-up-delay flex flex-col min-h-0">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => navigate('/contacts')}
-              onKeyDown={(e) => e.key === 'Enter' && navigate('/contacts')}
-              className="info-block rounded-2xl bg-black/40 backdrop-blur-sm p-6 sm:p-7 flex flex-col gap-6 cursor-pointer border border-[var(--accent)]/30 hover:border-[var(--accent)]/60 flex-1 min-h-0"
+            <Link
+              to="/services"
+              className="info-block rounded-2xl bg-black/40 backdrop-blur-sm p-6 sm:p-7 flex flex-col gap-6 cursor-pointer border border-[var(--accent)]/30 hover:border-[var(--accent)]/60 flex-1 min-h-0 block"
             >
               <div className="shrink-0">
                 <div className="text-xs uppercase tracking-[0.2em] text-white/60">
@@ -231,7 +219,7 @@ const Hero = () => {
                   договор без штрафов за расторжение.
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

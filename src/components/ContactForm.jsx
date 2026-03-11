@@ -8,11 +8,17 @@ const inputClass =
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
   const serviceFromUrl = searchParams.get('service');
+  const topic = searchParams.get('topic');
+  const initialComment = serviceFromUrl
+    ? decodeURIComponent(serviceFromUrl)
+    : topic === 'economy'
+      ? 'Хочу рассчитать экономию на IT: количество рабочих мест, текущие затраты.'
+      : '';
   const [form, setForm] = useState({
     name: '',
     phone: '',
     email: '',
-    comment: serviceFromUrl ? decodeURIComponent(serviceFromUrl) : '',
+    comment: initialComment,
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -21,9 +27,9 @@ const ContactForm = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    saveLead(form);
+    await saveLead(form);
     setForm({ name: '', phone: '', email: '', comment: '' });
     setSubmitted(true);
   };

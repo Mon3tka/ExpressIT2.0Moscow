@@ -1,29 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { apiLogin, setToken, getToken, clearToken } from '../../lib/api';
 
-const ADMIN_PASSWORD = 'admin123';
-const SESSION_KEY = 'it_admin_session';
-
-export function setAdminSession() {
-  try {
-    sessionStorage.setItem(SESSION_KEY, '1');
-  } catch (e) {
-    console.warn('sessionStorage not available', e);
-  }
+export function setAdminSession(token) {
+  setToken(token);
 }
 
 export function isAdminLoggedIn() {
-  try {
-    return sessionStorage.getItem(SESSION_KEY) === '1';
-  } catch {
-    return false;
-  }
+  return !!getToken();
 }
 
 export function logoutAdmin() {
-  try {
-    sessionStorage.removeItem(SESSION_KEY);
-  } catch (_) {}
+  clearToken();
 }
 
 const AdminLogin = () => {
@@ -38,17 +26,19 @@ const AdminLogin = () => {
     return <Navigate to={from} replace />;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    if (password.trim() === ADMIN_PASSWORD) {
-      setAdminSession();
+    try {
+      const { token } = await apiLogin(password);
+      setAdminSession(token);
       navigate(from, { replace: true });
-      return;
+    } catch (err) {
+      setError(err?.data?.error || err?.message || 'Ошибка входа');
+    } finally {
+      setLoading(false);
     }
-    setError('Неверный пароль. Для демо используйте admin123');
-    setLoading(false);
   };
 
   return (
@@ -93,7 +83,7 @@ const AdminLogin = () => {
         </form>
         <div className="px-8 pb-6">
           <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 text-xs text-amber-800">
-            <strong>Демо-доступ:</strong> пароль <code className="bg-amber-100 px-1.5 py-0.5 rounded font-mono text-amber-900">admin123</code>
+            <strong>По умолчанию:</strong> пароль <code className="bg-amber-100 px-1.5 py-0.5 rounded font-mono text-amber-900">admin123</code> (см. .env ADMIN_PASSWORD)
           </div>
         </div>
       </div>

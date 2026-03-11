@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const steps = [
   {
@@ -45,7 +46,7 @@ const Process = () => {
           {steps.map((step) => (
             <div
               key={step.number}
-              className="info-block relative rounded-2xl border border-[var(--accent)]/30 bg-black/40 backdrop-blur-sm p-6 flex flex-col gap-3"
+              className="info-block relative rounded-2xl border border-[var(--accent)]/30 bg-black/40 backdrop-blur-sm p-6 flex flex-col gap-3 hover:scale-[1.01] transition-transform duration-200"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="text-xs font-semibold tracking-[0.3em] uppercase text-white/60">
@@ -61,6 +62,15 @@ const Process = () => {
               <p className="text-sm text-white/70">{step.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link
+            to="/contacts"
+            className="info-block inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[var(--accent)] text-white font-semibold hover:bg-[var(--accent-hover)] transition shadow-lg hover:scale-[1.02]"
+          >
+            Начать с заявки
+          </Link>
         </div>
       </div>
     </section>

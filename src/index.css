@@ -117,3 +117,14 @@ h4 {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Появление при скролле для .reveal-on-scroll */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-on-scroll.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

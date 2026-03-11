@@ -47,8 +47,8 @@ const Advantages = () => {
           {advantages.map((item) => (
             <Link
               key={item.title}
-              to="/contacts"
-              className="info-block relative rounded-2xl bg-black/40 backdrop-blur-sm border border-[var(--accent)]/30 p-6 flex flex-col gap-3 block"
+              to="/services"
+              className="info-block relative rounded-2xl bg-black/40 backdrop-blur-sm border border-[var(--accent)]/30 p-6 flex flex-col gap-3 block hover:scale-[1.01] transition-transform duration-200"
             >
               <div className="inline-flex items-center gap-2 text-xs font-medium text-[var(--accent)]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
@@ -61,21 +61,21 @@ const Advantages = () => {
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3 text-xs sm:text-sm text-white/80">
-          <Link to="/contacts" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-colors duration-200 block">
+          <Link to="/about" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-all duration-200 block hover:scale-[1.01]">
             <div className="font-semibold text-white">Без vendor lock-in</div>
             <div className="mt-1 text-white/70">
               Вся документация, схемы и доступы принадлежат вам. При расторжении договора мы
               обязуемся передать полный пакет в течение 3 рабочих дней.
             </div>
           </Link>
-          <Link to="/contacts" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-colors duration-200 block">
+          <Link to="/services" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-all duration-200 block hover:scale-[1.01]">
             <div className="font-semibold text-white">Фиксированный абонемент</div>
             <div className="mt-1 text-white/70">
               Никаких «это вне договора» и допсчётов за каждую мелочь. Чётко зафиксированный объём
               и стоимость, понятная до подписания.
             </div>
           </Link>
-          <Link to="/contacts" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-colors duration-200 block">
+          <Link to="/contacts" className="info-block rounded-2xl border border-[var(--accent)]/30 bg-black/30 px-4 py-3 transition-all duration-200 block hover:scale-[1.01]">
             <div className="font-semibold text-white">Личный технический менеджер</div>
             <div className="mt-1 text-white/70">
               Вы не объясняете одну и ту же проблему каждый раз заново — за вашим проектом

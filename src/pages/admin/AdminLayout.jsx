@@ -28,6 +28,12 @@ const AdminLayout = () => {
             <Link to="/admin" className="text-white/80 hover:text-white text-sm transition">
               Заявки
             </Link>
+            <Link to="/admin/hero" className="text-white/80 hover:text-white text-sm transition">
+              Hero
+            </Link>
+            <Link to="/admin/settings" className="text-white/80 hover:text-white text-sm transition">
+              Дизайн
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             <Link

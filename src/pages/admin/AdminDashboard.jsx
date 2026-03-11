@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { getLeads, updateLeadStatus, deleteLead } from '../../lib/leads';
+import { apiGetLeads, apiUpdateLeadStatus, apiDeleteLead } from '../../lib/api';
 
 const STATUSES = [
   { value: 'new', label: 'Новая', color: 'bg-blue-100 text-blue-800' },
@@ -20,15 +20,31 @@ const formatDate = (iso) => {
 
 const AdminDashboard = () => {
   const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [deletingId, setDeletingId] = useState(null);
 
+  const fetchLeads = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await apiGetLeads();
+      setLeads(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setError(e?.data?.error || e?.message || 'Не удалось загрузить заявки');
+      setLeads([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLeads(getLeads());
+    fetchLeads();
   }, []);
 
-  const refresh = () => setLeads(getLeads());
+  const refresh = () => fetchLeads();
 
   const filtered = useMemo(() => {
     let list = leads;
@@ -59,16 +75,20 @@ const AdminDashboard = () => {
     return { total, todayCount, weekCount, newCount };
   }, [leads]);
 
-  const handleStatusChange = (id, status) => {
-    updateLeadStatus(id, status);
-    setLeads(getLeads());
+  const handleStatusChange = async (id, status) => {
+    try {
+      await apiUpdateLeadStatus(id, status);
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+    } catch (_) {}
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('Удалить заявку?')) return;
     setDeletingId(id);
-    deleteLead(id);
-    setLeads(getLeads());
+    try {
+      await apiDeleteLead(id);
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+    } catch (_) {}
     setDeletingId(null);
   };
 
@@ -82,7 +102,8 @@ const AdminDashboard = () => {
         <button
           type="button"
           onClick={refresh}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition shadow-sm"
+          disabled={loading}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition shadow-sm disabled:opacity-70"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -90,6 +111,12 @@ const AdminDashboard = () => {
           Обновить
         </button>
       </div>
+
+      {error && (
+        <div className="rounded-2xl bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
@@ -113,7 +140,7 @@ const AdminDashboard = () => {
       <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-slate-700 mb-3">Информационный блок</h2>
         <p className="text-sm text-slate-600">
-          Заявки сохраняются в браузере (localStorage). Для продакшена подключите бэкенд или CRM: замените вызовы в <code className="bg-slate-100 px-1 rounded text-xs">src/lib/leads.js</code> на отправку на ваш API.
+          Заявки сохраняются в базе данных на сервере. API: <code className="bg-slate-100 px-1 rounded text-xs">/api/leads</code>
         </p>
         <Link to="/contacts" className="inline-block mt-3 text-sm font-medium text-[var(--accent)] hover:underline">
           Открыть форму на сайте →
@@ -149,7 +176,11 @@ const AdminDashboard = () => {
         </select>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-12 text-center">
+          <p className="text-slate-600 font-medium">Загрузка заявок…</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-12 text-center">
           <div className="text-slate-400 text-5xl mb-3">📋</div>
           <p className="text-slate-600 font-medium">

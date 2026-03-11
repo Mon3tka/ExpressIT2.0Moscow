@@ -40,7 +40,7 @@ const Services = () => {
             <Link
               key={service.slug}
               to={`/services/${service.slug}`}
-              className="info-block group rounded-xl bg-black/40 backdrop-blur-sm p-6 flex flex-col justify-between block"
+              className="info-block group rounded-xl bg-black/40 backdrop-blur-sm p-6 flex flex-col justify-between block hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300"
             >
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white group-hover:text-[var(--accent)] transition-colors">
