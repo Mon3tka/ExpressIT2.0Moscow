@@ -6,23 +6,21 @@
 2. Установите зависимости (один раз):
    npm install
 
-3. Режим разработки (бэкенд + фронтенд вместе):
+3. Режим разработки (только фронтенд):
    npm run dev
-
    Сайт: http://localhost:3000
-   API:  http://localhost:3001
-   Админка: http://localhost:3000/admin (пароль по умолчанию: admin123)
 
-4. Продакшен (одна команда после сборки):
-   npm run build
-   npm run start
+   Полный стек (фронт + API) локально:
+   npx vercel dev
+   Сайт и API: http://localhost:3000
 
-   Сайт и API: http://localhost:3001
-   Админка: http://localhost:3001/admin
+4. Деплой на Vercel:
+   - Подключите репозиторий к Vercel
+   - В Vercel Dashboard → Storage → Add Database → Upstash Redis
+   - Создайте базу, переменные UPSTASH_REDIS_REST_URL и UPSTASH_REDIS_REST_TOKEN добавятся автоматически
+   - В Settings → Environment Variables добавьте (опционально):
+     ADMIN_PASSWORD=ваш_пароль
+     JWT_SECRET=секрет_для_jwt
+   - Deploy
 
-5. Опционально — переменные окружения (.env):
-   ADMIN_PASSWORD=ваш_пароль
-   JWT_SECRET=секрет_для_jwt
-   PORT=3001
-
-6. Антивирус может блокировать порты — добавьте папку в исключения при проблемах.
+5. Админка: /admin (пароль по умолчанию admin123)
