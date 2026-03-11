@@ -1,4 +1,3 @@
-import { ensureAdmin } from '../_lib/db.js';
 import { verifyToken } from '../_lib/auth.js';
 import { getLeads, createLead } from '../_lib/db.js';
 
@@ -17,7 +16,6 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    await ensureAdmin();
     const body = await request.json();
     const lead = await createLead(body);
     return Response.json(lead, { status: 201 });
